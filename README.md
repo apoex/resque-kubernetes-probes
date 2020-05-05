@@ -1,8 +1,9 @@
 # Resque::Kubernetes::Probes
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/resque/kubernetes/probes`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This gem injects code into Resque and Resque::Scheduler that touches a file in
+the `tmp` directory that's used by the `resque_health` and
+`resque_scheduler_health` binaries to provide readiness and liveness probes for
+Kubernetes.
 
 ## Installation
 
@@ -22,7 +23,14 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```yaml
+readinessProbe:
+  timeoutSeconds: 3
+  periodSeconds: 5
+  exec:
+    command:
+      - resque_health
+```
 
 ## Development
 
