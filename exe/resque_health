@@ -1,6 +1,8 @@
 file_name = "tmp/resque_health"
 timeout_ago = (Time.now - Float(ENV.fetch("RESQUE_SCHEDULER_INTERVAL", "5")))
 
+puts FileUtils.pwd
+
 if File.exist?(file_name) && File.mtime(file_name) > timeout_ago
   puts "Healthy"
   exit 0
