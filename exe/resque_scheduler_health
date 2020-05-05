@@ -1,4 +1,4 @@
-file_name = "tmp/resque_health"
+file_name = "tmp/resque_scheduler_health"
 timeout_ago = (Time.now - Float(ENV.fetch("RESQUE_SCHEDULER_INTERVAL", "5")))
 
 if File.exist?(file_name) && File.mtime(file_name) > timeout_ago
