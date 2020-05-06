@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+
+FILE="${1:-tmp/resque_health}"
+
+if [[ $FILE =~ "scheduler" ]]; then
+  INTERVAL=${RESQUE_SCHEDULER_INTERVAL:-5}
+else
+  INTERVAL=${RESQUE_HEARTBEAT_INTERVAL:-60}
+fi
+
+if test -f "$FILE"; then
+  if [ "$(( $(date +"%s") - $(date -r $FILE +%s) ))" -gt "$INTERVAL" ]; then
+    echo "UNHEALTHY. $FILE is older than $INTERVAL seconds."
+    exit 2
+  else
+    echo "HEALTHY"
+    exit 0
+  fi
+else
+  echo "$FILE does not exist"
+  exit 1
+fi
