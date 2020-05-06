@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    resque-kubernetes-probes (0.2.0)
+    resque-kubernetes-probes (0.3.0)
 
 GEM
   remote: https://rubygems.org/
