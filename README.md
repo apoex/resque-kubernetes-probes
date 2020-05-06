@@ -23,30 +23,40 @@ Or install it yourself as:
 
 ## Usage
 
+### Download the script in your Dockerfile
+
+```dockerfile
+RUN curl -f -o /usr/local/bin/resque_health_check -L "https://raw.githubusercontent.com/apoex/resque-kubernetes-probes/master/bin/resque_health_check" && \
+      chmod +x /usr/local/bin/resque_health_check
+```
+
 ### Resque
 
 ```yaml
 livenessProbe:
-  timeoutSeconds: 3
+  timeoutSeconds: 1
   periodSeconds: 5
   exec:
     command:
-      - test
-      - -n
-      - "$(find tmp/resque_health -mtime -${RESQUE_HEARTBEAT_INTERVAL:-60}s)"
+      - resque_health_check tmp/resque_health
 ```
 
 ### Resque Scheduler
 
+The gem does not inject itself into resque-scheduler by default, to do that you
+need to add the probe to the list of required files.
+
+```ruby
+gem "resque-kubernetes-probes", require: ["resque/kubernetes/probes/resque", "resque/kubernetes/probes/resque-scheduler"]
+```
+
 ```yaml
 livenessProbe:
-  timeoutSeconds: 3
+  timeoutSeconds: 1
   periodSeconds: 5
   exec:
     command:
-      - test
-      - -n
-      - "$(find tmp/resque_scheduler_health -mtime -${RESQUE_SCHEDULER_INTERVAL:-5}s)"
+      - resque_health_check tmp/resque_scheduler_health
 ```
 
 ## Development
