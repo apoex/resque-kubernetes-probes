@@ -38,7 +38,8 @@ livenessProbe:
   periodSeconds: 5
   exec:
     command:
-      - resque_health_check tmp/resque_health
+      - resque_health_check
+      - tmp/resque_health
 ```
 
 ### Resque Scheduler
@@ -56,7 +57,8 @@ livenessProbe:
   periodSeconds: 5
   exec:
     command:
-      - resque_health_check tmp/resque_scheduler_health
+      - resque_health_check
+      - tmp/resque_scheduler_health
 ```
 
 ## Development
