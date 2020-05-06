@@ -1,9 +1,9 @@
 # Resque::Kubernetes::Probes
 
 This gem injects code into Resque and Resque::Scheduler that touches a file in
-the `tmp` directory that's used by the `resque_health` and
-`resque_scheduler_health` binaries to provide readiness and liveness probes for
-Kubernetes.
+the `tmp` directory `resque_health` for Resque and `resque_scheduler_health` for
+Resque::Scheduler. These files can then be used by the Kubernetes liveness
+probes to check that the worker and scheduler is running properly.
 
 ## Installation
 
@@ -23,13 +23,30 @@ Or install it yourself as:
 
 ## Usage
 
+### Resque
+
 ```yaml
-readinessProbe:
+livenessProbe:
   timeoutSeconds: 3
   periodSeconds: 5
   exec:
     command:
-      - resque_health
+      - test
+      - -n
+      - "$(find tmp/resque_health -mtime -${RESQUE_HEARTBEAT_INTERVAL:-60}s)"
+```
+
+### Resque Scheduler
+
+```yaml
+livenessProbe:
+  timeoutSeconds: 3
+  periodSeconds: 5
+  exec:
+    command:
+      - test
+      - -n
+      - "$(find tmp/resque_scheduler_health -mtime -${RESQUE_SCHEDULER_INTERVAL:-5}s)"
 ```
 
 ## Development
