@@ -25,12 +25,24 @@ Or install it yourself as:
 
 ### Download the script in your Dockerfile
 
+The script is simple and checks that the heartbeat file has been updated in the
+last `interval` seconds.
+
 ```dockerfile
 RUN curl -f -o /usr/local/bin/resque_health_check -L "https://raw.githubusercontent.com/apoex/resque-kubernetes-probes/master/bin/resque_health_check" && \
       chmod +x /usr/local/bin/resque_health_check
 ```
 
 ### Resque
+
+The gem hooks into resque's heartbeat logic and by default the heartbeat
+interval is quite high (60 seconds). We recommend lowering the default value and
+making it configurable through environment variables.
+
+```ruby
+Resque.heartbeat_interval = ENV.fetch("RESQUE_HEARTBEAT_INTERVAL", 10).to_i
+Resque.prune_interval = Resque.heartbeat_interval * 5
+```
 
 ```yaml
 livenessProbe:
